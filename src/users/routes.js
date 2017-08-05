@@ -24,6 +24,53 @@ function createUser(req, res) {
     });
 }
 
+function deleteUser(req, res) {
+  const userId = req.params.id;
+  User.findById(userId)
+    .then((model) => {
+      return model.destroy({ force: true });
+    })
+    .then(() => {
+      res.json({});
+    })
+    .catch(() => {
+      res.status(500).json({
+        error: 'There was a problem deleting the user'
+      });
+    });
+}
+
+function getUsers(req, res) {
+  User.findAll()
+    .then((models) => {
+      const users = models.map((model) => {
+        return model.toJSON();
+      });
+      res.json(users);
+    })
+    .catch(() => {
+      res.status(500).json({
+        error: 'There was a problem retrieving the users'
+      });
+    });
+}
+
+function getUserById(req, res) {
+  const userId = req.params.id;
+  User.findById(userId)
+    .then((model) => {
+      res.json(model.toJSON());
+    })
+    .catch(() => {
+      res.status(500).json({
+        error: 'There was a problem retrieving the user'
+      });
+    });
+}
+
 module.exports = (app) => {
   app.post('/users', validate({ body: schema.createUser }), createUser);
+  app.del('/users/:id', validate({ params: schema.deleteUser }), deleteUser);
+  app.get('/users', validate({ body: schema.createUser }), getUsers);
+  app.get('/users/:id', validate({ params: schema.deleteUser }), getUserById);
 };

@@ -6,6 +6,11 @@ const createUser = {
   surname: Joi.string().required()
 };
 
+const deleteUser = {
+  id: Joi.number().integer().required()
+};
+
 module.exports = {
-  createUser: createUser
+  createUser: createUser,
+  deleteUser: deleteUser
 };
