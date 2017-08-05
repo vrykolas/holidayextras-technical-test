@@ -22,5 +22,7 @@
     "eslint-plugin-standard": "^3.0.1",
     "mocha": "^3.5.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "express": "^4.15.3"
+  }
 }
