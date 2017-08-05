@@ -68,9 +68,32 @@ function getUserById(req, res) {
     });
 }
 
+function updateUser(req, res) {
+  User.findById(req.params.id)
+    .then((model) => {
+      return model.update(req.body);
+    })
+    .then((model) => {
+      res.json(model.toJSON());
+    })
+    .catch(() => {
+      res.status(500).json({
+        error: 'There was a problem updating the user'
+      });
+    });
+}
+
 module.exports = (app) => {
   app.post('/users', validate({ body: schema.createUser }), createUser);
   app.del('/users/:id', validate({ params: schema.userId }), deleteUser);
   app.get('/users', validate({ body: schema.createUser }), getUsers);
   app.get('/users/:id', validate({ params: schema.userId }), getUserById);
+  app.put(
+    '/users/:id',
+    validate({
+      params: schema.userId,
+      body: schema.updateUser
+    }),
+    updateUser
+  );
 };
