@@ -85,7 +85,7 @@ function updateUser(req, res) {
 
 module.exports = (app) => {
   app.post('/users', validate({ body: schema.createUser }), createUser);
-  app.del('/users/:id', validate({ params: schema.userId }), deleteUser);
+  app.delete('/users/:id', validate({ params: schema.userId }), deleteUser);
   app.get('/users', validate({ body: schema.createUser }), getUsers);
   app.get('/users/:id', validate({ params: schema.userId }), getUserById);
   app.put(
