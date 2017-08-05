@@ -14,8 +14,8 @@ function validate(schema) {
 function createUser(req, res) {
   const user = req.body;
   User.create(user)
-    .then(() => {
-      res.json(user);
+    .then((model) => {
+      res.json(model.toJSON());
     })
     .catch(() => {
       res.status(500).json({
