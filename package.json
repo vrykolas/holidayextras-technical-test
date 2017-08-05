@@ -9,7 +9,6 @@
     "test": "rm database/db.sqlite; mocha --recursive test"
   },
   "author": "Scott Timmins",
-  "license": "ISC",
   "devDependencies": {
     "chai": "^4.1.1",
     "chai-http": "^3.0.0",
