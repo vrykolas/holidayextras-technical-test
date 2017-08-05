@@ -1,5 +1,6 @@
 const Celebrate = require('celebrate');
 
+const User = require('./model');
 const schema = require('./schema');
 
 function validate(schema) {
@@ -12,7 +13,15 @@ function validate(schema) {
 
 function createUser(req, res) {
   const user = req.body;
-  res.json(user);
+  User.create(user)
+    .then(() => {
+      res.json(user);
+    })
+    .catch(() => {
+      res.status(500).json({
+        error: 'There was a problem saving the user'
+      });
+    });
 }
 
 module.exports = (app) => {
