@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "lint": "eslint test src",
-    "test": "mocha"
+    "test": "mocha --recursive test"
   },
   "author": "Scott Timmins",
   "license": "ISC",
