@@ -1,5 +1,6 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
+
 chai.use(chaiHttp);
 chai.should();
 
@@ -41,15 +42,12 @@ describe('User Creation', () => {
 
   it('Should return a valid user', (done) => {
     const expandedUser = {
-      email: 'bob@example.com',
+      email: 'bob2@example.com',
       forename: 'Bob',
-      surname: 'Bobson',
-      likes: [
-        'cats'
-      ]
+      surname: 'Bobson'
     };
     const user = {
-      email: 'bob@example.com',
+      email: 'bob2@example.com',
       forename: 'Bob',
       surname: 'Bobson'
     };
@@ -61,6 +59,47 @@ describe('User Creation', () => {
       })
       .catch((err) => {
         done(err);
+      });
+  });
+
+  it('Should ignore extra attributes', (done) => {
+    const expandedUser = {
+      email: 'bob3@example.com',
+      forename: 'Bob',
+      surname: 'Bobson',
+      likes: [
+        'cats'
+      ]
+    };
+    const user = {
+      email: 'bob3@example.com',
+      forename: 'Bob',
+      surname: 'Bobson'
+    };
+    request.post('/users')
+      .send(expandedUser)
+      .then((res) => {
+        res.body.should.eql(user);
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
+  });
+
+  it('Should ignore users with a duplicate email', (done) => {
+    const user = {
+      email: 'bob@example.com',
+      forename: 'Bob',
+      surname: 'Bobson'
+    };
+    request.post('/users')
+      .send(user)
+      .then((res) => {
+        done(new Error('Invalid response'));
+      })
+      .catch(() => {
+        done();
       });
   });
 });
