@@ -17,7 +17,15 @@ const User = db.define(
   {
     createdAt: 'created',
     updatedAt: false,
-    deletedAt: false
+    deletedAt: false,
+    indexes: [
+      {
+        unique: true,
+        fields: [
+          'email'
+        ]
+      }
+    ]
   }
 );
 

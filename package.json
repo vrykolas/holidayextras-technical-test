@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "lint": "eslint test src",
-    "test": "mocha --recursive test"
+    "test": "rm database/db.sqlite; mocha --recursive test"
   },
   "author": "Scott Timmins",
   "license": "ISC",
