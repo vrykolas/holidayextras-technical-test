@@ -41,20 +41,25 @@ describe('User Creation', () => {
   });
 
   it('Should return a valid user', (done) => {
-    const expandedUser = {
-      email: 'bob2@example.com',
-      forename: 'Bob',
-      surname: 'Bobson'
-    };
     const user = {
       email: 'bob2@example.com',
       forename: 'Bob',
       surname: 'Bobson'
     };
+    const userKeys = [
+      'id',
+      'email',
+      'forename',
+      'surname',
+      'created'
+    ];
     request.post('/users')
-      .send(expandedUser)
+      .send(user)
       .then((res) => {
-        res.body.should.eql(user);
+        res.body.should.have.all.keys(userKeys);
+        res.body.email.should.eql(user.email);
+        res.body.forename.should.eql(user.forename);
+        res.body.surname.should.eql(user.surname);
         done();
       })
       .catch((err) => {
@@ -71,15 +76,10 @@ describe('User Creation', () => {
         'cats'
       ]
     };
-    const user = {
-      email: 'bob3@example.com',
-      forename: 'Bob',
-      surname: 'Bobson'
-    };
     request.post('/users')
       .send(expandedUser)
       .then((res) => {
-        res.body.should.eql(user);
+        res.body.should.not.have.keys('likes');
         done();
       })
       .catch((err) => {
