@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 
@@ -47,6 +48,15 @@ describe('User Read', () => {
       })
       .catch((err) => {
         done(err);
+      });
+  });
+
+  it('Should return not found for an invalid user', (done) => {
+    request.get(`/users/99999999`)
+      .end((err, res) => {
+        err.should.not.be.null;
+        res.should.have.status(404);
+        done();
       });
   });
 });
