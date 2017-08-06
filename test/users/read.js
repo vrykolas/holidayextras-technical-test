@@ -17,15 +17,12 @@ describe('User Read', () => {
 
   it('Should return an array of users', (done) => {
     request.get('/users')
-      .then((res) => {
+      .end((err, res) => {
         res.should.have.status(200);
         res.body.should.be.an.instanceof(Array);
         res.body.forEach((user) => {
           user.should.have.all.keys(userKeys);
         });
-        done();
-      })
-      .catch((err) => {
         done(err);
       });
   });
@@ -41,12 +38,12 @@ describe('User Read', () => {
       .send(user)
       .then((res) => {
         newUser = res.body;
-        return request.get(`/users/${res.body.id}`);
-      })
-      .then((res) => {
-        res.should.have.status(200);
-        res.body.should.eql(newUser);
-        done();
+        request.get(`/users/${res.body.id}`)
+          .end((err, res) => {
+            res.should.have.status(200);
+            res.body.should.eql(newUser);
+            done(err);
+          });
       })
       .catch((err) => {
         done(err);

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 
@@ -9,11 +10,9 @@ const request = chai.request(require('../../src/app'));
 describe('User Update', () => {
   it('Should warn if a user does not exist', (done) => {
     request.put('/users/999999999999999')
-      .then((res) => {
-        done(new Error('Invalid response'));
-      })
-      .catch(() => {
-        done();
+      .end((err, res) => {
+        res.should.have.status(404);
+        done(err);
       });
   });
 
@@ -39,14 +38,14 @@ describe('User Update', () => {
         return request.put(`/users/${userId}`).send(updatedUser);
       })
       .then(() => {
-        return request.get(`/users/${userId}`);
-      })
-      .then((res) => {
-        res.should.have.status(200);
-        res.body.email.should.eql(updatedUser.email);
-        res.body.forename.should.eql(updatedUser.forename);
-        res.body.surname.should.eql(updatedUser.surname);
-        done();
+        request.get(`/users/${userId}`)
+          .end((err, res) => {
+            res.should.have.status(200);
+            res.body.email.should.eql(updatedUser.email);
+            res.body.forename.should.eql(updatedUser.forename);
+            res.body.surname.should.eql(updatedUser.surname);
+            done(err);
+          });
       })
       .catch((err) => {
         done(err);
@@ -71,13 +70,16 @@ describe('User Update', () => {
         return request.post('/users').send(user2);
       })
       .then((res) => {
-        return request.put(`/users/${res.body.id}`).send(user1);
+        request.put(`/users/${res.body.id}`)
+          .send(user1)
+          .end((err, res) => {
+            err.should.not.be.null;
+            res.should.have.status(400);
+            done();
+          });
       })
-      .then((res) => {
-        done(new Error('Invalid response'));
-      })
-      .catch(() => {
-        done();
+      .catch((err) => {
+        done(err);
       });
   });
 });
