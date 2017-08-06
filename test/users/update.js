@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 
@@ -7,19 +8,25 @@ chai.should();
 const request = chai.request(require('../../src/app'));
 
 describe('User Update', () => {
-  it('Should warn if a user does not exist', (done) => {
+  it('Should return not found if a user does not exist', (done) => {
+    const user = {
+      email: 'bob6@example.com',
+      forename: 'Bob',
+      surname: 'Bobson'
+    };
+
     request.put('/users/999999999999999')
-      .then((res) => {
-        done(new Error('Invalid response'));
-      })
-      .catch(() => {
+      .send(user)
+      .end((err, res) => {
+        err.should.not.be.null;
+        res.should.have.status(404);
         done();
       });
   });
 
   it('Should update a valid user', (done) => {
     const user = {
-      email: 'bob6@example.com',
+      email: 'bob7@example.com',
       forename: 'Bob',
       surname: 'Bobson'
     };
@@ -39,14 +46,14 @@ describe('User Update', () => {
         return request.put(`/users/${userId}`).send(updatedUser);
       })
       .then(() => {
-        return request.get(`/users/${userId}`);
-      })
-      .then((res) => {
-        res.should.have.status(200);
-        res.body.email.should.eql(updatedUser.email);
-        res.body.forename.should.eql(updatedUser.forename);
-        res.body.surname.should.eql(updatedUser.surname);
-        done();
+        request.get(`/users/${userId}`)
+          .end((err, res) => {
+            res.should.have.status(200);
+            res.body.email.should.eql(updatedUser.email);
+            res.body.forename.should.eql(updatedUser.forename);
+            res.body.surname.should.eql(updatedUser.surname);
+            done(err);
+          });
       })
       .catch((err) => {
         done(err);
@@ -55,12 +62,12 @@ describe('User Update', () => {
 
   it('Should be unable to update a user to a duplicate email', (done) => {
     const user1 = {
-      email: 'bob7@example.com',
+      email: 'bob8@example.com',
       forename: 'Bob',
       surname: 'Bobson'
     };
     const user2 = {
-      email: 'bob8@example.com',
+      email: 'bob9@example.com',
       forename: 'Bob',
       surname: 'Bobson'
     };
@@ -71,13 +78,16 @@ describe('User Update', () => {
         return request.post('/users').send(user2);
       })
       .then((res) => {
-        return request.put(`/users/${res.body.id}`).send(user1);
+        request.put(`/users/${res.body.id}`)
+          .send(user1)
+          .end((err, res) => {
+            err.should.not.be.null;
+            res.should.have.status(400);
+            done();
+          });
       })
-      .then((res) => {
-        done(new Error('Invalid response'));
-      })
-      .catch(() => {
-        done();
+      .catch((err) => {
+        done(err);
       });
   });
 });

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 
@@ -15,10 +16,9 @@ describe('User Creation', () => {
     };
     request.post('/users')
       .send(user)
-      .then((res) => {
-        done(new Error('Invalid response'));
-      })
-      .catch(() => {
+      .end((err, res) => {
+        err.should.not.be.null;
+        res.should.have.status(400);
         done();
       });
   });
@@ -31,11 +31,8 @@ describe('User Creation', () => {
     };
     request.post('/users')
       .send(user)
-      .then((res) => {
+      .end((err, res) => {
         res.should.have.status(200);
-        done();
-      })
-      .catch((err) => {
         done(err);
       });
   });
@@ -55,14 +52,12 @@ describe('User Creation', () => {
     ];
     request.post('/users')
       .send(user)
-      .then((res) => {
+      .end((err, res) => {
+        res.should.have.status(200);
         res.body.should.have.all.keys(userKeys);
         res.body.email.should.eql(user.email);
         res.body.forename.should.eql(user.forename);
         res.body.surname.should.eql(user.surname);
-        done();
-      })
-      .catch((err) => {
         done(err);
       });
   });
@@ -78,11 +73,9 @@ describe('User Creation', () => {
     };
     request.post('/users')
       .send(expandedUser)
-      .then((res) => {
+      .end((err, res) => {
+        res.should.have.status(200);
         res.body.should.not.have.keys('likes');
-        done();
-      })
-      .catch((err) => {
         done(err);
       });
   });
@@ -95,10 +88,9 @@ describe('User Creation', () => {
     };
     request.post('/users')
       .send(user)
-      .then((res) => {
-        done(new Error('Invalid response'));
-      })
-      .catch(() => {
+      .end((err, res) => {
+        err.should.not.be.null;
+        res.should.have.status(400);
         done();
       });
   });
