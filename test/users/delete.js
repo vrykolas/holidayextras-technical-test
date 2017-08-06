@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 
@@ -9,10 +10,9 @@ const request = chai.request(require('../../src/app'));
 describe('User Deletion', () => {
   it('Should warn if a user does not exist', (done) => {
     request.del('/users/999999999999999')
-      .then((res) => {
-        done(new Error('Invalid response'));
-      })
-      .catch(() => {
+      .end((err, res) => {
+        err.should.not.be.null;
+        res.should.have.status(404);
         done();
       });
   });
@@ -26,11 +26,11 @@ describe('User Deletion', () => {
     request.post('/users')
       .send(user)
       .then((res) => {
-        return request.del(`/users/${res.body.id}`);
-      })
-      .then((res) => {
-        res.should.have.status(200);
-        done();
+        request.del(`/users/${res.body.id}`)
+          .end((err, res) => {
+            res.should.have.status(200);
+            done(err);
+          });
       })
       .catch((err) => {
         done(err);
