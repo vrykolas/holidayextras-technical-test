@@ -8,7 +8,7 @@ chai.should();
 const request = chai.request(require('../../src/app'));
 
 describe('User Update', () => {
-  it('Should warn if a user does not exist', (done) => {
+  it('Should return not found if a user does not exist', (done) => {
     request.put('/users/999999999999999')
       .end((err, res) => {
         res.should.have.status(404);
