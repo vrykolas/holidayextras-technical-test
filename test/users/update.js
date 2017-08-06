@@ -9,16 +9,24 @@ const request = chai.request(require('../../src/app'));
 
 describe('User Update', () => {
   it('Should return not found if a user does not exist', (done) => {
+    const user = {
+      email: 'bob6@example.com',
+      forename: 'Bob',
+      surname: 'Bobson'
+    };
+
     request.put('/users/999999999999999')
+      .send(user)
       .end((err, res) => {
+        err.should.not.be.null;
         res.should.have.status(404);
-        done(err);
+        done();
       });
   });
 
   it('Should update a valid user', (done) => {
     const user = {
-      email: 'bob6@example.com',
+      email: 'bob7@example.com',
       forename: 'Bob',
       surname: 'Bobson'
     };
@@ -54,12 +62,12 @@ describe('User Update', () => {
 
   it('Should be unable to update a user to a duplicate email', (done) => {
     const user1 = {
-      email: 'bob7@example.com',
+      email: 'bob8@example.com',
       forename: 'Bob',
       surname: 'Bobson'
     };
     const user2 = {
-      email: 'bob8@example.com',
+      email: 'bob9@example.com',
       forename: 'Bob',
       surname: 'Bobson'
     };
